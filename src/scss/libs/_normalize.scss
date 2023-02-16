@@ -1,14 +1,15 @@
 * {
-  box-sizing: border-box;
-  margin: 0;
   padding: 0;
-  font-family: "Proxima Nova", Roboto, system-ui, Tahoma, sans-serif;
+  margin: 0;
   list-style: none;
   outline: none;
+  font-family: 'Nunito', Roboto, system-ui, Tahoma, sans-serif;
+  box-sizing: border-box;
 }
 
 html {
-  text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
@@ -44,10 +45,11 @@ a {
 }
 
 @mixin noselect {
-  -webkit-touch-callout: none; /* iOS Safari */ /* Safari */
-  user-select: none; /* Konqueror HTML */
-  user-select: none; /* Old versions of Firefox */
-  user-select: none; /* Internet Explorer/Edge */
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Old versions of Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
   user-select: none; /* Non-prefixed version, currently
                                   supported by Chrome, Opera and Firefox */
 }
