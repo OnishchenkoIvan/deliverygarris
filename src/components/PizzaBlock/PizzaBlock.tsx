@@ -1,22 +1,49 @@
 import React from "react";
 
-type PizzaBlockType = {
+export type PizzaBlockType = {
+  id: number;
+  imageUrl: string;
+  types: number[];
+  sizes: number[];
+  category?: number;
+  rating?: number;
   title: string;
   price: number;
 };
-export const PizzaBlock: React.FC<PizzaBlockType> = ({ title, price }) => {
+
+enum pizzaPlate {
+  "тонкое",
+  "традиционное",
+}
+export const PizzaBlock: React.FC<PizzaBlockType> = ({
+  title,
+  price,
+  types,
+  sizes,
+  imageUrl,
+  id,
+}) => {
+  const [plate, setPlate] = React.useState(0);
+  const choosePlate = (index: number) => {
+    setPlate(index);
+  };
   return (
     <div className="pizza-block">
-      <img
-        className="pizza-block__image"
-        src="https://dodopizza-a.akamaihd.net/static/Img/Products/Pizza/ru-RU/b750f576-4a83-48e6-a283-5a8efb68c35d.jpg"
-        alt="Pizza"
-      />
+      <img className="pizza-block__image" src={imageUrl} alt={title} />
       <h4 className="pizza-block__title">{title}</h4>
       <div className="pizza-block__selector">
         <ul>
-          <li className="active">тонкое</li>
-          <li>традиционное</li>
+          {types.map((item, index) => {
+            return (
+              <li
+                key={index}
+                className={plate === index ? "active" : ""}
+                onClick={() => choosePlate(index)}
+              >
+                {pizzaPlate[item]}
+              </li>
+            );
+          })}
         </ul>
         <ul>
           <li className="active">26 см.</li>

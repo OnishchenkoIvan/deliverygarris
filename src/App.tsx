@@ -3,9 +3,21 @@ import "./scss/app.scss";
 import { Header } from "./components/Header/Header";
 import { Categories } from "./components/Categories/Categories";
 import { Sort } from "./components/Sort/Sort";
-import { PizzaBlock } from "./components/PizzaBlock/PizzaBlock";
+import { PizzaBlock, PizzaBlockType } from "./components/PizzaBlock/PizzaBlock";
 
 export function App() {
+  const [items, setItems] = React.useState<PizzaBlockType[]>([]);
+
+  React.useEffect(() => {
+    fetch("https://63ef188e271439b7fe6816d0.mockapi.io/items")
+      .then((res) => {
+        return res.json();
+      })
+      .then((json) => {
+        setItems(json);
+      });
+  }, []);
+
   return (
     <div className="wrapper">
       <Header />
@@ -15,19 +27,23 @@ export function App() {
             <Categories />
             <div className="sort">
               <Sort />
-              <div className="sort__popup">
-                <ul>
-                  <li className="active">популярности</li>
-                  <li>цене</li>
-                  <li>алфавиту</li>
-                </ul>
-              </div>
             </div>
           </div>
           <h2 className="content__title">Все пиццы</h2>
           <div className="content__items">
-            <PizzaBlock title="Чизбургер-пицца" price={390} />
-            <PizzaBlock title="Четыре сыра" price={480} />
+            {items.map((item) => {
+              return (
+                <PizzaBlock
+                  key={item.id}
+                  id={item.id}
+                  imageUrl={item.imageUrl}
+                  types={item.types}
+                  sizes={item.sizes}
+                  title={item.title}
+                  price={item.price}
+                />
+              );
+            })}
           </div>
         </div>
       </div>
