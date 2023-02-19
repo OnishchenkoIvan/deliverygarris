@@ -10,8 +10,21 @@ import {
 export const Home = () => {
   const [items, setItems] = React.useState<PizzaBlockType[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
+  const [categoryId, setCategoryId] = React.useState(0);
+  const [sortDirection, setSortDirection] = React.useState(true);
+
+  const [sortType, setSortType] = React.useState({
+    name: "популярности",
+    sortProperty: "rating",
+  });
+
   React.useEffect(() => {
-    fetch("https://63ef188e271439b7fe6816d0.mockapi.io/items")
+    setIsLoading(true);
+    fetch(
+      `https://63ef188e271439b7fe6816d0.mockapi.io/items?${
+        categoryId > 0 ? `category=${categoryId}` : ""
+      }&sortBy=${sortType.sortProperty}&order=${sortDirection ? "asc" : "desc"}`
+    )
       .then((res) => {
         return res.json();
       })
@@ -19,14 +32,22 @@ export const Home = () => {
         setItems(json);
         setIsLoading(false);
       });
-  }, []);
+  }, [categoryId, sortType, sortDirection]);
+
   return (
     <>
       <div className="content__top">
-        <Categories />
-        <div className="sort">
-          <Sort />
-        </div>
+        <Categories
+          value={categoryId}
+          onClickCategory={(id) => setCategoryId(id)}
+        />
+
+        <Sort
+          value={sortType}
+          onClickSort={(id) => setSortType(id)}
+          sortDirectionToggle={() => setSortDirection(!sortDirection)}
+          sortDirection={sortDirection}
+        />
       </div>
       <h2 className="content__title">Все пиццы</h2>
       <div className="content__items">

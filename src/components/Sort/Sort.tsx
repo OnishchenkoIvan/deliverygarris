@@ -1,18 +1,39 @@
 import React from "react";
 
-export const Sort = () => {
-  const [isVisibleSortPopup, setIsVisibleSortPopup] = React.useState(false);
-  const [selected, setSelected] = React.useState(0);
-  const list = ["популярности", "цене", "алфавиту"];
+type SortPropertyType = {
+  name: string;
+  sortProperty: string;
+};
 
-  const onClickSortItem = (index: number) => {
-    setSelected(index);
+type SortType = {
+  value: SortPropertyType;
+  onClickSort: (index: SortPropertyType) => void;
+  sortDirectionToggle: () => void;
+  sortDirection: boolean;
+};
+export const Sort: React.FC<SortType> = ({
+  value,
+  onClickSort,
+  sortDirection,
+  sortDirectionToggle,
+}) => {
+  const [isVisibleSortPopup, setIsVisibleSortPopup] = React.useState(false);
+  const list = [
+    { name: "популярности", sortProperty: "rating" },
+    { name: "цене", sortProperty: "price" },
+    { name: "алфавиту", sortProperty: "title" },
+  ];
+
+  const onClickSortItem = (index: SortPropertyType) => {
+    onClickSort(index);
     setIsVisibleSortPopup(false);
   };
   return (
     <div className="sort">
       <div className="sort__label">
         <svg
+          onClick={sortDirectionToggle}
+          className={sortDirection ? "" : "rotateSvg"}
           width="10"
           height="6"
           viewBox="0 0 10 6"
@@ -26,7 +47,7 @@ export const Sort = () => {
         </svg>
         <b>Сортировка по:</b>
         <span onClick={() => setIsVisibleSortPopup(!isVisibleSortPopup)}>
-          {list[selected]}
+          {value.name}
         </span>
       </div>
       {isVisibleSortPopup && (
@@ -36,10 +57,12 @@ export const Sort = () => {
               return (
                 <li
                   key={index}
-                  onClick={() => onClickSortItem(index)}
-                  className={selected === index ? "active" : ""}
+                  onClick={() => onClickSortItem(sort)}
+                  className={
+                    value.sortProperty === sort.sortProperty ? "active" : ""
+                  }
                 >
-                  {sort}
+                  {sort.name}
                 </li>
               );
             })}
