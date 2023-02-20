@@ -7,14 +7,16 @@ import {
   PizzaBlockType,
 } from "../../components/PizzaBlock/PizzaBlock";
 import { Pagination } from "../../components/Pagination/Pagination";
+import { SearchContext } from "../../App";
 
-export const Home: React.FC<{ searchValue: string }> = ({ searchValue }) => {
+export const Home: React.FC = () => {
   const [items, setItems] = React.useState<PizzaBlockType[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
   const [categoryId, setCategoryId] = React.useState(0);
-  const [currentPage, setCurrentPage] = React.useState(0);
+  const [currentPage, setCurrentPage] = React.useState(1);
   const [sortDirection, setSortDirection] = React.useState(true);
 
+  const { searchValue } = React.useContext(SearchContext);
   const [sortType, setSortType] = React.useState({
     name: "популярности",
     sortProperty: "rating",
@@ -23,11 +25,13 @@ export const Home: React.FC<{ searchValue: string }> = ({ searchValue }) => {
   React.useEffect(() => {
     setIsLoading(true);
     fetch(
-      `https://63ef188e271439b7fe6816d0.mockapi.io/items?page=${currentPage}&limit=4${
-        categoryId > 0 ? `category=${categoryId}` : ""
-      }&sortBy=${sortType.sortProperty}&order=${
-        sortDirection ? "asc" : "desc"
-      }${searchValue ? `&search=${searchValue}` : ""}`
+      `https://63ef188e271439b7fe6816d0.mockapi.io/items?page=${
+        searchValue ? 1 : currentPage
+      }&limit=4${categoryId > 0 ? `category=${categoryId}` : ""}&sortBy=${
+        sortType.sortProperty
+      }&order=${sortDirection ? "asc" : "desc"}${
+        searchValue ? `&search=${searchValue}` : ""
+      }`
     )
       .then((res) => {
         return res.json();
