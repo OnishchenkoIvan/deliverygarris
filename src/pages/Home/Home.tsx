@@ -6,11 +6,13 @@ import {
   PizzaBlock,
   PizzaBlockType,
 } from "../../components/PizzaBlock/PizzaBlock";
+import { Pagination } from "../../components/Pagination/Pagination";
 
-export const Home = () => {
+export const Home: React.FC<{ searchValue: string }> = ({ searchValue }) => {
   const [items, setItems] = React.useState<PizzaBlockType[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
   const [categoryId, setCategoryId] = React.useState(0);
+  const [currentPage, setCurrentPage] = React.useState(0);
   const [sortDirection, setSortDirection] = React.useState(true);
 
   const [sortType, setSortType] = React.useState({
@@ -21,9 +23,11 @@ export const Home = () => {
   React.useEffect(() => {
     setIsLoading(true);
     fetch(
-      `https://63ef188e271439b7fe6816d0.mockapi.io/items?${
+      `https://63ef188e271439b7fe6816d0.mockapi.io/items?page=${currentPage}&limit=4${
         categoryId > 0 ? `category=${categoryId}` : ""
-      }&sortBy=${sortType.sortProperty}&order=${sortDirection ? "asc" : "desc"}`
+      }&sortBy=${sortType.sortProperty}&order=${
+        sortDirection ? "asc" : "desc"
+      }${searchValue ? `&search=${searchValue}` : ""}`
     )
       .then((res) => {
         return res.json();
@@ -32,7 +36,7 @@ export const Home = () => {
         setItems(json);
         setIsLoading(false);
       });
-  }, [categoryId, sortType, sortDirection]);
+  }, [categoryId, sortType, sortDirection, searchValue, currentPage]);
 
   return (
     <>
@@ -53,7 +57,7 @@ export const Home = () => {
       <div className="content__items">
         {items.map((item) =>
           isLoading ? (
-            <Sceleton />
+            <Sceleton key={item.id} />
           ) : (
             <PizzaBlock
               key={item.id}
@@ -67,6 +71,7 @@ export const Home = () => {
           )
         )}
       </div>
+      <Pagination onPageChange={(num) => setCurrentPage(num)} />
     </>
   );
 };
