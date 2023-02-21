@@ -2,12 +2,12 @@ import React from "react";
 
 type CategoriesType = {
   value: number;
-  onClickCategory: (index: number) => void;
+  onChangeCategory: (index: number) => void;
 };
 
 export const Categories: React.FC<CategoriesType> = ({
   value,
-  onClickCategory,
+  onChangeCategory,
 }) => {
   const categories = [
     "Все",
@@ -25,7 +25,7 @@ export const Categories: React.FC<CategoriesType> = ({
           return (
             <li
               key={index}
-              onClick={() => onClickCategory(index)}
+              onClick={() => onChangeCategory(index)}
               className={value === index ? "active" : ""}
             >
               {cat}

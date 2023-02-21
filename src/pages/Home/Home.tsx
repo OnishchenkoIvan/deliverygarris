@@ -8,28 +8,38 @@ import {
 } from "../../components/PizzaBlock/PizzaBlock";
 import { Pagination } from "../../components/Pagination/Pagination";
 import { SearchContext } from "../../App";
+import { useDispatch, useSelector } from "react-redux";
+import { setCategoryId } from "../../redux/slices/filterSlice";
+import { RootState } from "../../redux/store";
 
 export const Home: React.FC = () => {
+  const dispatch = useDispatch();
+  const categoryId = useSelector<RootState, number>(
+    (state) => state.filter.categoryId
+  );
+  const sortType = useSelector<RootState, "rating" | "price" | "title">(
+    (state) => state.filter.sort.sortProperty
+  );
+
   const [items, setItems] = React.useState<PizzaBlockType[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
-  const [categoryId, setCategoryId] = React.useState(0);
   const [currentPage, setCurrentPage] = React.useState(1);
   const [sortDirection, setSortDirection] = React.useState(true);
 
   const { searchValue } = React.useContext(SearchContext);
-  const [sortType, setSortType] = React.useState({
-    name: "популярности",
-    sortProperty: "rating",
-  });
+
+  const onChangeCategory = (id: number) => {
+    dispatch(setCategoryId(id));
+  };
 
   React.useEffect(() => {
     setIsLoading(true);
     fetch(
       `https://63ef188e271439b7fe6816d0.mockapi.io/items?page=${
         searchValue ? 1 : currentPage
-      }&limit=4${categoryId > 0 ? `category=${categoryId}` : ""}&sortBy=${
-        sortType.sortProperty
-      }&order=${sortDirection ? "asc" : "desc"}${
+      }&limit=4${
+        categoryId > 0 ? `&category=${categoryId}` : ""
+      }&sortBy=${sortType}&order=${sortDirection ? "asc" : "desc"}${
         searchValue ? `&search=${searchValue}` : ""
       }`
     )
@@ -45,14 +55,9 @@ export const Home: React.FC = () => {
   return (
     <>
       <div className="content__top">
-        <Categories
-          value={categoryId}
-          onClickCategory={(id) => setCategoryId(id)}
-        />
+        <Categories value={categoryId} onChangeCategory={onChangeCategory} />
 
         <Sort
-          value={sortType}
-          onClickSort={(id) => setSortType(id)}
           sortDirectionToggle={() => setSortDirection(!sortDirection)}
           sortDirection={sortDirection}
         />
