@@ -26,14 +26,31 @@ export const Sort: React.FC<SortType> = ({
   const sort = useSelector<RootState, SortPropertyType>(
     (state) => state.filter.sort
   );
+  const sortRef = React.useRef<any | null>(null);
+
   const [isVisibleSortPopup, setIsVisibleSortPopup] = React.useState(false);
 
   const onClickSortItem = (index: SortPropertyType) => {
     dispatch(setSort(index));
     setIsVisibleSortPopup(false);
   };
+
+  React.useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const path = event.composedPath();
+      if (!path.includes(sortRef.current)) {
+        setIsVisibleSortPopup(false);
+      }
+    };
+    document.body.addEventListener("click", handleClickOutside);
+
+    return () => {
+      document.body.removeEventListener("click", handleClickOutside);
+    };
+  }, []);
+
   return (
-    <div className="sort">
+    <div ref={sortRef} className="sort">
       <div className="sort__label">
         <svg
           onClick={sortDirectionToggle}

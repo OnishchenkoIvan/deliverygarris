@@ -1,4 +1,7 @@
 import React from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { addItem } from "../../redux/slices/cartSlice";
+import { RootState } from "../../redux/store";
 
 export type PizzaBlockType = {
   id: number;
@@ -9,11 +12,18 @@ export type PizzaBlockType = {
   rating?: number;
   title: string;
   price: number;
+  count: number;
 };
 
 enum pizzaPlate {
   "тонкое",
   "традиционное",
+}
+
+enum pizzaSize {
+  "26 см",
+  "30 см",
+  "40 см",
 }
 export const PizzaBlock: React.FC<PizzaBlockType> = ({
   title,
@@ -22,11 +32,34 @@ export const PizzaBlock: React.FC<PizzaBlockType> = ({
   sizes,
   imageUrl,
   id,
+  count,
 }) => {
+  const dispatch = useDispatch();
+  const cartItem = useSelector<RootState, PizzaBlockType | undefined>((state) =>
+    state.cart.items.find((obj) => obj.id === id)
+  );
   const [plate, setPlate] = React.useState(0);
+  const [activeSize, setActiveSize] = React.useState(0);
+
+  const addedCount = cartItem ? cartItem.count : 0;
   const choosePlate = (index: number) => {
     setPlate(index);
   };
+  const chooseSize = (index: number) => {
+    setActiveSize(index);
+  };
+  const onClickAdd = () => {
+    const item = {
+      id,
+      title,
+      price,
+      imageUrl,
+      types: pizzaPlate[plate],
+      sizes: activeSize,
+    };
+    dispatch(addItem(item));
+  };
+
   return (
     <div className="pizza-block-wrapper">
       <div className="pizza-block">
@@ -47,14 +80,25 @@ export const PizzaBlock: React.FC<PizzaBlockType> = ({
             })}
           </ul>
           <ul>
-            <li className="active">26 см.</li>
-            <li>30 см.</li>
-            <li>40 см.</li>
+            {sizes.map((size, index) => {
+              return (
+                <li
+                  key={index}
+                  className={activeSize === index ? "active" : ""}
+                  onClick={() => chooseSize(index)}
+                >
+                  {pizzaSize[index]}
+                </li>
+              );
+            })}
           </ul>
         </div>
         <div className="pizza-block__bottom">
           <div className="pizza-block__price">от {price} ₽</div>
-          <div className="button button--outline button--add">
+          <button
+            onClick={onClickAdd}
+            className="button button--outline button--add"
+          >
             <svg
               width="12"
               height="12"
@@ -68,8 +112,8 @@ export const PizzaBlock: React.FC<PizzaBlockType> = ({
               />
             </svg>
             <span>Добавить</span>
-            <i>2</i>
-          </div>
+            {addedCount > 0 && <i>{addedCount}</i>}
+          </button>
         </div>
       </div>
     </div>

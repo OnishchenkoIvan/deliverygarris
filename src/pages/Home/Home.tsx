@@ -117,6 +117,7 @@ export const Home: React.FC = () => {
               sizes={item.sizes}
               title={item.title}
               price={item.price}
+              count={item.count}
             />
           )
         )}
