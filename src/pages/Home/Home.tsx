@@ -15,9 +15,9 @@ import {
   setPageCount,
 } from "../../redux/slices/filterSlice";
 import { RootState } from "../../redux/store";
-import axios from "axios";
 import qs from "qs";
 import { useNavigate } from "react-router-dom";
+import { fetchPizzas } from "../../redux/slices/pizzaSlice";
 
 export const Home: React.FC = () => {
   const navigate = useNavigate();
@@ -32,7 +32,10 @@ export const Home: React.FC = () => {
     (state) => state.filter.sort.sortProperty
   );
 
-  const [items, setItems] = React.useState<PizzaBlockType[]>([]);
+  const items = useSelector<RootState, PizzaBlockType[]>(
+    (state) => state.pizza.items
+  );
+
   const [isLoading, setIsLoading] = React.useState(true);
   const [sortDirection, setSortDirection] = React.useState(true);
   const isSearch = React.useRef(false);
@@ -47,22 +50,24 @@ export const Home: React.FC = () => {
     dispatch(setPageCount(num));
   };
 
-  const fetchPizzas = () => {
+  const params = {
+    sortDirection,
+    searchValue,
+    currentPage,
+    categoryId,
+    sortType,
+  };
+  const getPizzas = async () => {
     setIsLoading(true);
-    axios
-      .get(
-        `https://63ef188e271439b7fe6816d0.mockapi.io/items?page=${
-          searchValue ? 1 : currentPage
-        }&limit=4${
-          categoryId > 0 ? `&category=${categoryId}` : ""
-        }&sortBy=${sortType}&order=${sortDirection ? "asc" : "desc"}${
-          searchValue ? `&search=${searchValue}` : ""
-        }`
-      )
-      .then((res) => {
-        setItems(res.data);
-        setIsLoading(false);
-      });
+    try {
+      // @ts-ignore
+      dispatch(fetchPizzas(params));
+    } catch (error) {
+      alert("Ошибка при получении пицц");
+    } finally {
+      setIsLoading(false);
+    }
+    window.scroll(0, 0);
   };
 
   React.useEffect(() => {
@@ -77,7 +82,7 @@ export const Home: React.FC = () => {
   React.useEffect(() => {
     window.scroll(0, 0);
     if (!isSearch.current) {
-      fetchPizzas();
+      getPizzas();
     }
     isSearch.current = false;
   }, [categoryId, sortType, sortDirection, searchValue, currentPage]);
