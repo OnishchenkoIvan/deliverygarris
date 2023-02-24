@@ -20,11 +20,6 @@ enum pizzaPlate {
   "традиционное",
 }
 
-enum pizzaSize {
-  "26 см",
-  "30 см",
-  "40 см",
-}
 export const PizzaBlock: React.FC<PizzaBlockType> = ({
   title,
   price,
@@ -55,7 +50,7 @@ export const PizzaBlock: React.FC<PizzaBlockType> = ({
       price,
       imageUrl,
       types: pizzaPlate[plate],
-      sizes: activeSize,
+      sizes: sizes[activeSize],
     };
     dispatch(addItem(item));
   };
@@ -87,7 +82,7 @@ export const PizzaBlock: React.FC<PizzaBlockType> = ({
                   className={activeSize === index ? "active" : ""}
                   onClick={() => chooseSize(index)}
                 >
-                  {pizzaSize[index]}
+                  {size} см
                 </li>
               );
             })}

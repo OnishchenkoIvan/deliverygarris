@@ -3,6 +3,7 @@ import { CartItem, CartItemType } from "./CartItem";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import { clearItems } from "../../redux/slices/cartSlice";
+import { CartEmpty } from "./CartEmpty";
 
 export const Cart = () => {
   const dispatch = useDispatch();
@@ -20,6 +21,11 @@ export const Cart = () => {
       dispatch(clearItems());
     }
   };
+
+  if (totalCount === 0) {
+    return <CartEmpty />;
+  }
+
   return (
     <div className="container container--cart">
       <div className="cart">
@@ -134,7 +140,6 @@ export const Cart = () => {
                   strokeLinejoin="round"
                 />
               </svg>
-
               <span>Вернуться назад</span>
             </a>
             <div className="button pay-btn">
