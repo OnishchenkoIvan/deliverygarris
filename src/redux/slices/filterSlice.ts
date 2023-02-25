@@ -1,6 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { RootState } from "../store";
+import { SortPropertyType } from "../../components/Sort/Sort";
 
-const initialState: InitialStateType = {
+const initialState: InitialSortStateType = {
+  searchValue: "",
   categoryId: 0,
   currentPage: 1,
   sort: {
@@ -8,13 +11,11 @@ const initialState: InitialStateType = {
     sortProperty: "rating",
   },
 };
-export type InitialStateType = {
+export type InitialSortStateType = {
+  searchValue: string;
   categoryId: number;
   currentPage: number;
-  sort: {
-    name: string;
-    sortProperty: "rating";
-  };
+  sort: SortPropertyType;
 };
 const filterSlice = createSlice({
   name: "filter",
@@ -22,6 +23,9 @@ const filterSlice = createSlice({
   reducers: {
     setCategoryId(state, action) {
       state.categoryId = action.payload;
+    },
+    setSearchValue(state, action) {
+      state.searchValue = action.payload;
     },
     setSort(state, action) {
       state.sort = action.payload;
@@ -37,6 +41,16 @@ const filterSlice = createSlice({
   },
 });
 
-export const { setCategoryId, setSort, setPageCount, setFilters } =
-  filterSlice.actions;
+export const selectFilter = (state: RootState): InitialSortStateType =>
+  state.filter;
+export const selectSort = (state: RootState): SortPropertyType => {
+  return state.filter.sort;
+};
+export const {
+  setCategoryId,
+  setSort,
+  setPageCount,
+  setFilters,
+  setSearchValue,
+} = filterSlice.actions;
 export default filterSlice.reducer;

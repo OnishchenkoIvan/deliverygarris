@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { PizzaBlockType } from "../../components/PizzaBlock/PizzaBlock";
+import { RootState } from "../store";
 
 const initialState: InitialStateCartType = {
   totalPrice: 0,
@@ -49,5 +50,9 @@ const cartSlice = createSlice({
   },
 });
 
+export const selectCart = (state: RootState): InitialStateCartType =>
+  state.cart;
+export const selectCartItemById = (id: number) => (state: RootState) =>
+  state.cart.items.find((obj) => obj.id === id);
 export const { addItem, removeItem, clearItems, minusItem } = cartSlice.actions;
 export default cartSlice.reducer;

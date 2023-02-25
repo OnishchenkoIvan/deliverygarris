@@ -1,9 +1,9 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
-import { setSort } from "../../redux/slices/filterSlice";
+import { selectSort, setSort } from "../../redux/slices/filterSlice";
 
-type SortPropertyType = {
+export type SortPropertyType = {
   name: string;
   sortProperty: string;
 };
@@ -23,9 +23,7 @@ export const Sort: React.FC<SortType> = ({
   sortDirectionToggle,
 }) => {
   const dispatch = useDispatch();
-  const sort = useSelector<RootState, SortPropertyType>(
-    (state) => state.filter.sort
-  );
+  const sort = useSelector<RootState, SortPropertyType>(selectSort);
   const sortRef = React.useRef<any | null>(null);
 
   const [isVisibleSortPopup, setIsVisibleSortPopup] = React.useState(false);

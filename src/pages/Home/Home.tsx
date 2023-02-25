@@ -7,9 +7,10 @@ import {
   PizzaBlockType,
 } from "../../components/PizzaBlock/PizzaBlock";
 import { Pagination } from "../../components/Pagination/Pagination";
-import { SearchContext } from "../../App";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  InitialSortStateType,
+  selectFilter,
   setCategoryId,
   setFilters,
   setPageCount,
@@ -17,30 +18,26 @@ import {
 import { RootState } from "../../redux/store";
 import qs from "qs";
 import { useNavigate } from "react-router-dom";
-import { fetchPizzas } from "../../redux/slices/pizzaSlice";
+import { fetchPizzas, selectPizzaData } from "../../redux/slices/pizzaSlice";
 
 export const Home: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const categoryId = useSelector<RootState, number>(
-    (state) => state.filter.categoryId
-  );
-  const currentPage = useSelector<RootState, number>(
-    (state) => state.filter.currentPage
-  );
-  const sortType = useSelector<RootState, "rating" | "price" | "title">(
-    (state) => state.filter.sort.sortProperty
-  );
 
-  const items = useSelector<RootState, PizzaBlockType[]>(
-    (state) => state.pizza.items
-  );
+  const { categoryId, currentPage, sort, searchValue } = useSelector<
+    RootState,
+    InitialSortStateType
+  >(selectFilter);
+
+  const { status, items } = useSelector<
+    RootState,
+    { items: PizzaBlockType[]; status: "loading" | "success" | "error" }
+  >(selectPizzaData);
 
   const [isLoading, setIsLoading] = React.useState(true);
   const [sortDirection, setSortDirection] = React.useState(true);
   const isSearch = React.useRef(false);
   const isMounted = React.useRef(false);
-  const { searchValue } = React.useContext(SearchContext);
 
   const onChangeCategory = (id: number) => {
     dispatch(setCategoryId(id));
@@ -55,18 +52,12 @@ export const Home: React.FC = () => {
     searchValue,
     currentPage,
     categoryId,
-    sortType,
+    sortType: sort.sortProperty,
   };
   const getPizzas = async () => {
     setIsLoading(true);
-    try {
-      // @ts-ignore
-      dispatch(fetchPizzas(params));
-    } catch (error) {
-      alert("Ошибка при получении пицц");
-    } finally {
-      setIsLoading(false);
-    }
+    // @ts-ignore
+    dispatch(fetchPizzas(params));
     window.scroll(0, 0);
   };
 
@@ -85,19 +76,19 @@ export const Home: React.FC = () => {
       getPizzas();
     }
     isSearch.current = false;
-  }, [categoryId, sortType, sortDirection, searchValue, currentPage]);
+  }, [categoryId, sort.sortProperty, sortDirection, searchValue, currentPage]);
 
   React.useEffect(() => {
     if (isMounted.current) {
       const queryString = qs.stringify({
-        sortProperty: sortType,
+        sortProperty: sort.sortProperty,
         categoryId,
         currentPage,
       });
       navigate(`?${queryString}`);
     }
     isMounted.current = true;
-  }, [categoryId, sortType, sortDirection, currentPage]);
+  }, [categoryId, sort.sortProperty, sortDirection, currentPage]);
   return (
     <>
       <div className="content__top">
@@ -109,24 +100,37 @@ export const Home: React.FC = () => {
         />
       </div>
       <h2 className="content__title">Все пиццы</h2>
-      <div className="content__items">
-        {items.map((item) =>
-          isLoading ? (
-            <Sceleton key={item.id} />
-          ) : (
-            <PizzaBlock
-              key={item.id}
-              id={item.id}
-              imageUrl={item.imageUrl}
-              types={item.types}
-              sizes={item.sizes}
-              title={item.title}
-              price={item.price}
-              count={item.count}
-            />
-          )
-        )}
-      </div>
+      {status === "error" ? (
+        <div className="content__error-info">
+          <h2>
+            Пиццы нет <span>😢</span>
+            <p>
+              К сожалению произошла ошибка, попробуйте перезагрузить страницу
+              или зайти позже
+            </p>
+          </h2>
+        </div>
+      ) : (
+        <div className="content__items">
+          {items.map((item) =>
+            status === "loading" ? (
+              <Sceleton key={item.id} />
+            ) : (
+              <PizzaBlock
+                key={item.id}
+                id={item.id}
+                imageUrl={item.imageUrl}
+                types={item.types}
+                sizes={item.sizes}
+                title={item.title}
+                price={item.price}
+                count={item.count}
+              />
+            )
+          )}
+        </div>
+      )}
+
       <Pagination onPageChange={onChangePage} currantPage={currentPage} />
     </>
   );

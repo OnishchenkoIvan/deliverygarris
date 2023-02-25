@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { PizzaBlockType } from "../../components/PizzaBlock/PizzaBlock";
 import axios from "axios";
+import { RootState } from "../store";
 
 export type paramsPizzaType = {
   sortDirection: boolean;
@@ -60,5 +61,6 @@ const pizzaSlice = createSlice({
   },
 });
 
+export const selectPizzaData = (state: RootState) => state.pizza;
 export const { setItems } = pizzaSlice.actions;
 export default pizzaSlice.reducer;

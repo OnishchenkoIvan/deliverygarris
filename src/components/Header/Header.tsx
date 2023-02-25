@@ -4,11 +4,11 @@ import { Link } from "react-router-dom";
 import { Search } from "../Search/Search";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
-import { InitialStateCartType } from "../../redux/slices/cartSlice";
+import { InitialStateCartType, selectCart } from "../../redux/slices/cartSlice";
 
 export const Header = () => {
   const { items, totalPrice } = useSelector<RootState, InitialStateCartType>(
-    (state) => state.cart
+    selectCart
   );
   const totalCount = items.reduce((count, item) => item.count + count, 0);
   return (
