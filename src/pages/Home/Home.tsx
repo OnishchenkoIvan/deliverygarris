@@ -17,7 +17,7 @@ import {
 } from "../../redux/slices/filterSlice";
 import { RootState } from "../../redux/store";
 import qs from "qs";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { fetchPizzas, selectPizzaData } from "../../redux/slices/pizzaSlice";
 
 export const Home: React.FC = () => {
@@ -89,6 +89,7 @@ export const Home: React.FC = () => {
     }
     isMounted.current = true;
   }, [categoryId, sort.sortProperty, sortDirection, currentPage]);
+
   return (
     <>
       <div className="content__top">
@@ -116,16 +117,17 @@ export const Home: React.FC = () => {
             status === "loading" ? (
               <Sceleton key={item.id} />
             ) : (
-              <PizzaBlock
-                key={item.id}
-                id={item.id}
-                imageUrl={item.imageUrl}
-                types={item.types}
-                sizes={item.sizes}
-                title={item.title}
-                price={item.price}
-                count={item.count}
-              />
+              <Link key={item.id} to={`/pizza/${item.id}`}>
+                <PizzaBlock
+                  id={item.id}
+                  imageUrl={item.imageUrl}
+                  types={item.types}
+                  sizes={item.sizes}
+                  title={item.title}
+                  price={item.price}
+                  count={item.count}
+                />
+              </Link>
             )
           )}
         </div>

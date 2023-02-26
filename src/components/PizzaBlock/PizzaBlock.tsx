@@ -4,7 +4,7 @@ import { addItem, selectCartItemById } from "../../redux/slices/cartSlice";
 import { RootState } from "../../redux/store";
 
 export type PizzaBlockType = {
-  id: number;
+  id: string;
   imageUrl: string;
   types: number[];
   sizes: number[];
