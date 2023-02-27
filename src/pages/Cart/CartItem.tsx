@@ -1,9 +1,17 @@
 import React from "react";
-import { PizzaBlockType } from "../../components/PizzaBlock/PizzaBlock";
 import { useDispatch } from "react-redux";
 import { addItem, minusItem, removeItem } from "../../redux/slices/cartSlice";
+import clsx from "clsx";
 
-export type CartItemType = Omit<PizzaBlockType, "category" | "rating">;
+export type CartItemType = {
+  id: string;
+  title: string;
+  type: string;
+  size: number;
+  price: number;
+  count: number;
+  imageUrl: string;
+};
 
 export const CartItem: React.FC<CartItemType> = ({
   title,
@@ -11,8 +19,8 @@ export const CartItem: React.FC<CartItemType> = ({
   id,
   count,
   imageUrl,
-  types,
-  sizes,
+  type,
+  size,
 }) => {
   const dispatch = useDispatch();
   const onClickMinus = () => {
@@ -22,7 +30,7 @@ export const CartItem: React.FC<CartItemType> = ({
     dispatch(
       addItem({
         id,
-      })
+      } as CartItemType)
     );
   };
 
@@ -39,13 +47,16 @@ export const CartItem: React.FC<CartItemType> = ({
       <div className="cart__item-info">
         <h3>{title}</h3>
         <p>
-          {types}, {sizes} см.
+          {type}, {size} см.
         </p>
       </div>
       <div className="cart__item-count">
         <button
+          disabled={count === 1}
           onClick={onClickMinus}
-          className="button button--outline button--circle cart__item-count-minus"
+          className={clsx(
+            "button button--outline button--circle cart__item-count-minus"
+          )}
         >
           <svg
             width="10"

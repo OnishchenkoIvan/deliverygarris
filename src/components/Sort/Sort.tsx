@@ -5,7 +5,7 @@ import { selectSort, setSort } from "../../redux/slices/filterSlice";
 
 export type SortPropertyType = {
   name: string;
-  sortProperty: string;
+  sortProperty: "rating" | "price" | "title";
 };
 
 type SortType = {
@@ -13,7 +13,7 @@ type SortType = {
   sortDirection: boolean;
 };
 
-export const list = [
+export const list: SortPropertyType[] = [
   { name: "популярности", sortProperty: "rating" },
   { name: "цене", sortProperty: "price" },
   { name: "алфавиту", sortProperty: "title" },
