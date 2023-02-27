@@ -16,7 +16,6 @@ export const Pagination: React.FC<{
       pageCount={3}
       previousLabel="<"
       forcePage={currantPage - 1}
-      // renderOnZeroPageCount={null}
     />
   );
 };

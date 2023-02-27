@@ -18,13 +18,14 @@ export const list = [
   { name: "цене", sortProperty: "price" },
   { name: "алфавиту", sortProperty: "title" },
 ];
+
 export const Sort: React.FC<SortType> = ({
   sortDirection,
   sortDirectionToggle,
 }) => {
   const dispatch = useDispatch();
   const sort = useSelector<RootState, SortPropertyType>(selectSort);
-  const sortRef = React.useRef<any | null>(null);
+  const sortRef = React.useRef<HTMLDivElement>(null);
 
   const [isVisibleSortPopup, setIsVisibleSortPopup] = React.useState(false);
 
@@ -36,7 +37,7 @@ export const Sort: React.FC<SortType> = ({
   React.useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const path = event.composedPath();
-      if (!path.includes(sortRef.current)) {
+      if (sortRef.current && !path.includes(sortRef.current)) {
         setIsVisibleSortPopup(false);
       }
     };
