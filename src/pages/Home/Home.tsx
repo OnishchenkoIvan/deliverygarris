@@ -34,7 +34,7 @@ export const Home: React.FC = () => {
     { items: PizzaBlockType[]; status: "loading" | "success" | "error" }
   >(selectPizzaData);
 
-  const [isLoading, setIsLoading] = React.useState(true);
+  // const [isLoading, setIsLoading] = React.useState(true);
   const [sortDirection, setSortDirection] = React.useState(true);
   const isSearch = React.useRef(false);
   const isMounted = React.useRef(false);
@@ -55,7 +55,8 @@ export const Home: React.FC = () => {
     sortType: sort.sortProperty,
   };
   const getPizzas = async () => {
-    setIsLoading(true);
+    // setIsLoading(true);
+    console.log(params);
     dispatch(fetchPizzas(params));
     window.scroll(0, 0);
   };
@@ -79,6 +80,7 @@ export const Home: React.FC = () => {
   }, [categoryId, sort.sortProperty, sortDirection, searchValue, currentPage]);
 
   React.useEffect(() => {
+    getPizzas();
     if (isMounted.current) {
       const queryString = qs.stringify({
         sortProperty: sort.sortProperty,

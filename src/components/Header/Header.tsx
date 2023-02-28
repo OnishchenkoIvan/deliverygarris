@@ -10,7 +10,17 @@ export const Header = () => {
   const { items, totalPrice } = useSelector<RootState, InitialStateCartType>(
     selectCart
   );
+  const isMounted = React.useRef(false);
+
   const totalCount = items.reduce((count, item) => item.count + count, 0);
+
+  React.useEffect(() => {
+    if (isMounted.current) {
+      const json = JSON.stringify(items);
+      localStorage.setItem("cart", json);
+    }
+    isMounted.current = true;
+  }, [items]);
   return (
     <div className="header">
       <div className="container">
