@@ -1,7 +1,7 @@
 import React from "react";
 import style from "./NotFound.module.scss";
 
-export const NotFound = () => {
+const NotFound = () => {
   return (
     <div className={style.root}>
       <span>😴</span>
@@ -10,3 +10,5 @@ export const NotFound = () => {
     </div>
   );
 };
+
+export default NotFound;
