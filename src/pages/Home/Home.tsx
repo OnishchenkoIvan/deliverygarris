@@ -55,8 +55,6 @@ export const Home: React.FC = () => {
     sortType: sort.sortProperty,
   };
   const getPizzas = async () => {
-    // setIsLoading(true);
-    console.log(params);
     dispatch(fetchPizzas(params));
     window.scroll(0, 0);
   };
